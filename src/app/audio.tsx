@@ -9,12 +9,11 @@ export default function Audio({
 }) {
   if (data()) return <main>[ ALL THESE BARS, NO POLICE ]</main>;
 
-  createEffect(() => {
-    // console.log(data()?.segments);
-  });
+  // createEffect(() => {});
 
   return (
     <main>
+      <div class=" w-full h-1 fixed top-1/2 bg-red-500  bg-opacity-40 z-50"></div>
       <div class=" max-w-[1000px] mx-auto ">
         <For each={data()?.segments}>{(seg) => <Row data={seg} />}</For>
       </div>
@@ -28,7 +27,10 @@ const Row = ({ data }: { data: Segment }) => {
 
   return (
     <div class="row" style={{ height: `${height}px` }}>
-      <div class="absolute left-0">{notes[one]}</div>
+      <div class="absolute left-0">
+        {notes[one]}
+        {/* {data.start} */}
+      </div>
       <div class="flex h-full">
         {data.pitches.map((pitch, p) => {
           const show = pitch > 0.4;

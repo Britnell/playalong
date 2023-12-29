@@ -49,7 +49,7 @@ export function spotifyLoginURL(): string {
     client_id +
     "&response_type=token" +
     "&redirect_uri=" +
-    encodeURIComponent(redirect_uri) +
+    encodeURIComponent(redirect_uri + "/app") +
     "&scope=" +
     scopes.join("%20") +
     "&state=listening-101"

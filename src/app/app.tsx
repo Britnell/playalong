@@ -36,7 +36,6 @@ export const timeToScroll = (t: number) => t * 100 - window.innerHeight / 2;
 
 export default function App() {
   createEffect(() => {
-    // console.log(data());
     // console.log(state());
   });
 
@@ -46,12 +45,14 @@ export default function App() {
     const y = timeToScroll(t);
     const behavior = Math.abs(window.scrollY - y) > 300 ? "auto" : "smooth";
 
+    // console.log(t);
+
     window.scrollTo({
       top: y,
       left: 0,
       behavior,
     });
-  }, 100);
+  }, 60);
   onCleanup(() => {
     clearInterval(intvl);
   });
@@ -91,6 +92,7 @@ const Listening = ({ children }: { children: JSXElement }) => {
       }
 
       const time = (before + after) / 2;
+
       const artist = status.item?.artists
         .map((art: any) => art.name)
         .join(", ");
@@ -128,6 +130,8 @@ const Listening = ({ children }: { children: JSXElement }) => {
 };
 
 const Head = ({ state }: { state: State }) => {
+  console.log({ b: state.begin, p: state.progress });
+
   return (
     <header class="fixed top-0  bg-black  z-10 py-2 px-4">
       {state.id && (
