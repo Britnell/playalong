@@ -86,9 +86,11 @@ export function spotifyQuery(url: string, token: string) {
     }
     if (resp.status === 403) {
       // Bad OAuth request
+      return { error: "auth" };
     }
     if (resp.status === 429) {
       // exceeded rate limits
+      return { error: "rate" };
     }
     return { error: resp.status };
   });
@@ -108,3 +110,11 @@ export const notes = [
   "A#",
   "B",
 ];
+
+export const linear = (
+  x: number,
+  min: number,
+  max: number,
+  ymin: number,
+  ymax: number
+) => ymin + ((x - min) / (max - min)) * (ymax - ymin);
