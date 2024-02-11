@@ -1,0 +1,21 @@
+---
+import { spotifyLoginURL } from "../lib/spotify";
+
+const loginUri = spotifyLoginURL();
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
+    <h1>Astro</h1>
+    <a href={loginUri} class="bg-green-500 px-3 py-1 text-black"
+      >Log in w spotify</a
+    >
+  </body>
+</html>
