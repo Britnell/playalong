@@ -102,7 +102,15 @@ export const App = () => {
     <div>
       <Head state={state} />
       {data ? (
-        <Audio data={data} />
+        <>
+          <Audio data={data} />
+          {autoscroll && (
+            <>
+              <div class=" w-full fixed top-0 bottom-[calc(50vh+200px)] bg-slate-700  bg-opacity-20 z-50"></div>
+              <div class=" w-full fixed bottom-0 top-[calc(50vh+200px)] bg-slate-700  bg-opacity-20 z-50"></div>
+            </>
+          )}
+        </>
       ) : (
         <main>[ ALL THESE BARS, NO POLICE ]</main>
       )}
@@ -116,7 +124,7 @@ const Head = ({ state }: { state: State }) => {
       {state.id && (
         <>
           <p>
-            Song : {state.title} - {state.artist}{" "}
+            {state.title} - {state.artist}{" "}
           </p>
           <p>{state.playing ? " " : "paused"}</p>
         </>

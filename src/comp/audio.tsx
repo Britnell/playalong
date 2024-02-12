@@ -2,13 +2,10 @@ import { expon, notes, type Segment, type SongData } from "src/lib/spotify";
 
 export default function Audio({ data }: { data: SongData }) {
   return (
-    <main>
-      <div class=" w-full h-1 fixed top-1/2 bg-red-500  bg-opacity-40 z-50"></div>
-      <div class=" max-w-[1000px] mx-auto ">
-        {data.segments.map((seg: Segment) => (
-          <Row data={seg} />
-        ))}
-      </div>
+    <main class=" max-w-[1000px] mx-auto ">
+      {data.segments.map((seg: Segment) => (
+        <Row data={seg} />
+      ))}
     </main>
   );
 }
