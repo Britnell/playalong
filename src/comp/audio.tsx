@@ -22,7 +22,11 @@ const Row = ({ data }: { data: Segment }) => {
   return (
     <div class="row" style={{ height: `${height}px` }}>
       <div class="absolute left-0">
-        {notes[one]}
+        {/* {notes[one]} */}
+        <span class=" text-[0.8em]">
+          {Math.floor(data.confidence * 10) / 10}
+        </span>
+
         {/* {data.start} */}
       </div>
       <div class="flex h-full">
@@ -33,8 +37,11 @@ const Row = ({ data }: { data: Segment }) => {
           return (
             <div class={` key${p} `}>
               <div style={{ "background-color": color }}>
-                {/* {pitch} */}
-                {show ? notes[p] : " "}
+                <span class=" text-[0.8em]">
+                  {"   "}
+                  {Math.floor(pitch * 10) / 10}
+                </span>
+                {/* {show ? notes[p] : " "} */}
               </div>
             </div>
           );

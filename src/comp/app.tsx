@@ -6,7 +6,11 @@ let lastSongId = "";
 
 export const App = () => {
   const [token] = useState(getHashToken);
-  const [state, setState] = useState<State>({ playing: false });
+  const [songid, setSongid] = useState("");
+  const [autoscroll, setAutoscroll] = useState(true);
+  const [state, setState] = useState<State>({
+    playing: false,
+  });
   const [data, setData] = useState<SongData | null>(null);
 
   if (!token)
@@ -20,14 +24,22 @@ export const App = () => {
   useEffect(() => {
     // sync on load
     if (!token) return;
-    getPlaybackStatus(token).then((st) => setState(st));
+    getPlaybackStatus(token).then((st) => {
+      if (st.id === songid) return;
+      setSongid(st.id);
+      setState(st);
+    });
   }, []);
 
   useEffect(() => {
     // sync interval
     const intvl = setInterval(() => {
       if (!token) return;
-      getPlaybackStatus(token).then((st) => setState(st));
+      getPlaybackStatus(token).then((st) => {
+        if (st.id === songid) return;
+        setSongid(st.id);
+        setState(st);
+      });
     }, 3 * 1000);
     return () => clearInterval(intvl);
   }, [state]);
@@ -35,24 +47,23 @@ export const App = () => {
   useEffect(() => {
     // get song data
     async function getSongData() {
-      if (!state.id || !token) return;
-      if (state.id === lastSongId) return;
-
-      const data = await spotifyQuery(`/audio-analysis/${state.id}`, token);
+      if (!songid || !token) return;
+      console.log(" > data");
+      const data = await spotifyQuery(`/audio-analysis/${songid}`, token);
       if (data.error) {
         console.log(data.error);
         return;
       }
-      lastSongId = state.id;
       setData(data);
     }
     getSongData();
-  }, [state]);
+  }, [songid]);
 
   useEffect(() => {
     // scroll time sync
     const intvl = setInterval(() => {
-      if (!state.begin || !state.progress || !state.playing) return;
+      if (!state.begin || !state.progress || !state.playing || !autoscroll)
+        return;
 
       const playbacktime = (Date.now() - state.begin + state.progress) / 1000;
       const scrollPos = playbacktime * 100 - window.innerHeight / 2;
@@ -64,9 +75,23 @@ export const App = () => {
         left: 0,
         behavior,
       });
-    }, 80);
+    }, 50);
     return () => clearInterval(intvl);
+  }, [state, autoscroll]);
+
+  useEffect(() => {
+    const onkey = (ev: KeyboardEvent) => {
+      if (ev.code === "Space") {
+        ev.preventDefault();
+        console.log("SPACE");
+        setAutoscroll((sc) => !sc);
+      }
+    };
+    window.addEventListener("keypress", onkey);
+    return () => window.removeEventListener("keypress", onkey);
   }, [state]);
+
+  console.log(state, data);
 
   return (
     <div>
