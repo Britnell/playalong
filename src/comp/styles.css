@@ -3,6 +3,14 @@ body {
   color: white;
 }
 
+.row {
+  display: grid;
+  --black-fr: 0.55fr;
+  grid-template-columns:
+    1fr var(--black-fr) 1fr var(--black-fr) 1fr 1fr var(--black-fr)
+    1fr var(--black-fr) 1fr var(--black-fr) 1fr;
+}
+
 .key0,
 .key1,
 .key2,
@@ -18,9 +26,8 @@ body {
 .key12 {
   background-color: white;
   color: black;
-  flex: 1;
+  /* flex: 1; */
 
-  overflow: hidden;
   position: relative;
 
   /* padding: 8px; */
@@ -33,7 +40,7 @@ body {
 .key10 {
   background-color: black;
   color: white;
-  flex: 0.7;
+  /* flex: 0.7; */
 }
 .key4 {
   border-right: 2px solid black;
@@ -42,27 +49,11 @@ body {
   border-left: 2px solid black;
 }
 
-:where(
-    .key0,
-    .key1,
-    .key2,
-    .key3,
-    .key4,
-    .key5,
-    .key6,
-    .key7,
-    .key8,
-    .key9,
-    .key10,
-    .key11,
-    .key12
-  )
-  > div {
-  width: 80%;
+.note {
+  width: 60%;
   max-width: 40px;
-  /* border-radius: 20px; */
+  border-radius: 6px;
   margin: 0 auto;
   text-align: center;
   height: 100%;
-  /* background-color: red; */
 }

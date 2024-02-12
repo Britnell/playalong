@@ -19,35 +19,27 @@ const Row = ({ data }: { data: Segment }) => {
   const total = data.pitches.reduce((t, x) => t + x, 0);
 
   return (
-    <div class="row" style={{ height: `${height}px` }}>
-      {/* <div class="absolute left-0">
-        {notes[one]}
-        <span class=" text-[0.8em]">{notes[one]}</span>
-        <span class=" text-[0.8em]">{dec(data.confidence)}</span>
-        {data.start}
-      </div> */}
-      <div class="flex h-full">
-        {data.pitches.map((pitch, p) => {
-          // const conf = pitch > 0.4 ? data.confidence * pitch : 0;
-          const conf = (data.confidence * pitch) / total;
-          const min = 0.08;
-          return (
-            <div class={` key${p} `}>
-              <div
-                class=" rounded-sm"
-                style={{ "background-color": highlight(conf, min) }}
-              >
-                {/* <span class=" text-[0.8em]">
+    <div class="row h-full" style={{ height: `${height}px` }}>
+      {data.pitches.map((pitch, p) => {
+        // const conf = pitch > 0.4 ? data.confidence * pitch : 0;
+        const conf = (data.confidence * pitch) / total;
+        const min = 0.08;
+        return (
+          <div class={` key${p} `}>
+            <div
+              class=" note "
+              style={{ "background-color": highlight(conf, min) }}
+            >
+              {/* <span class=" text-[0.8em]">
                   {dec(conf)}
                   {dec(pitch)}
                 </span> */}
-                {conf > min ? notes[p] : " "}
-                {/* {show ? notes[p] : " "} */}
-              </div>
+              {conf > min ? notes[p] : " "}
+              {/* {show ? notes[p] : " "} */}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
