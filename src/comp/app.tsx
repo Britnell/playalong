@@ -94,7 +94,11 @@ export const App = () => {
   return (
     <div>
       <Head state={state} />
-      <Audio data={data} />
+      {data ? (
+        <Audio data={data} />
+      ) : (
+        <main>[ ALL THESE BARS, NO POLICE ]</main>
+      )}
     </div>
   );
 };

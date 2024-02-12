@@ -1,8 +1,6 @@
 import { linear, notes, type Segment, type SongData } from "src/lib/spotify";
 
-export default function Audio({ data }: { data: SongData | null }) {
-  if (!data) return <main>[ ALL THESE BARS, NO POLICE ]</main>;
-
+export default function Audio({ data }: { data: SongData }) {
   return (
     <main>
       <div class=" w-full h-1 fixed top-1/2 bg-red-500  bg-opacity-40 z-50"></div>
