@@ -1,6 +1,5 @@
 ---
 import { spotifyLoginURL } from "../lib/spotify";
-const loginUri = spotifyLoginURL();
 ---
 
 <html lang="en">
@@ -13,7 +12,7 @@ const loginUri = spotifyLoginURL();
   </head>
   <body>
     <h1>Astro</h1>
-    <a href={loginUri} class="bg-green-500 px-3 py-1 text-black"
+    <a href={spotifyLoginURL} class="bg-green-500 px-3 py-1 text-black"
       >Log in w spotify</a
     >
   </body>

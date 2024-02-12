@@ -42,19 +42,13 @@ const scopes = [
   "user-read-currently-playing",
 ];
 
-export function spotifyLoginURL(): string {
-  return (
-    "https://accounts.spotify.com/authorize" +
-    "?client_id=" +
-    client_id +
-    "&response_type=token" +
-    "&redirect_uri=" +
-    encodeURIComponent(redirect_uri + "/app") +
-    "&scope=" +
-    scopes.join("%20") +
-    "&state=listening-101"
-  );
-}
+export const spotifyLoginURL =
+  "https://accounts.spotify.com/authorize" +
+  `?client_id=${client_id}` +
+  "&response_type=token" +
+  `&redirect_uri=${encodeURIComponent(redirect_uri + "/app")}` +
+  `&scope=${scopes.join("%20")}` +
+  "&state=listening-101";
 
 export function loadHashToken() {
   let hash = window.location.hash,
@@ -81,7 +75,7 @@ export function spotifyQuery(url: string, token: string) {
 
     console.log(" err ", resp.status);
     if (resp.status === 401) {
-      // window.location.href = spotifyLoginURL();
+      window.location.href = spotifyLoginURL;
       return { error: "expired" };
     }
     if (resp.status === 403) {

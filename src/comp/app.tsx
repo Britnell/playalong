@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { type SongData, spotifyQuery } from "src/lib/spotify";
 import Audio from "./audio";
 
-let lastSongId = "";
-
 export const App = () => {
   const [token] = useState(getHashToken);
   const [songid, setSongid] = useState("");
@@ -61,25 +59,25 @@ export const App = () => {
 
   useEffect(() => {
     // scroll time sync
-    const intvl = setInterval(() => {
-      if (!state.begin || !state.progress || !state.playing || !autoscroll)
-        return;
-
+    const scrollUpdate = () => {
+      if (!state.begin || !state.progress) return;
       const playbacktime = (Date.now() - state.begin + state.progress) / 1000;
       const scrollPos = playbacktime * 100 - window.innerHeight / 2;
-      const behavior =
-        Math.abs(window.scrollY - scrollPos) > 300 ? "auto" : "smooth";
-
       window.scrollTo({
         top: scrollPos,
         left: 0,
-        behavior,
+        behavior: "auto",
       });
-    }, 50);
-    return () => clearInterval(intvl);
+      frame = window.requestAnimationFrame(scrollUpdate);
+    };
+    let frame: number;
+    if (!state.playing || !autoscroll) return;
+    frame = window.requestAnimationFrame(scrollUpdate);
+    return () => window.cancelAnimationFrame(frame);
   }, [state, autoscroll]);
 
   useEffect(() => {
+    // keyboard ctrl
     const onkey = (ev: KeyboardEvent) => {
       if (ev.code === "Space") {
         ev.preventDefault();
@@ -89,9 +87,9 @@ export const App = () => {
     };
     window.addEventListener("keypress", onkey);
     return () => window.removeEventListener("keypress", onkey);
-  }, [state]);
+  }, [autoscroll]);
 
-  console.log(state, data);
+  // console.log(state, data);
 
   return (
     <div>
