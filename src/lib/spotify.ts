@@ -46,7 +46,7 @@ export const spotifyLoginURL =
   "https://accounts.spotify.com/authorize" +
   `?client_id=${client_id}` +
   "&response_type=token" +
-  `&redirect_uri=${encodeURIComponent(redirect_uri + "/app")}` +
+  `&redirect_uri=${encodeURIComponent(`${redirect_uri}/app`)}` +
   `&scope=${scopes.join("%20")}` +
   "&state=listening-101";
 

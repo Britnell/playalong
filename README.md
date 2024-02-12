@@ -2,8 +2,10 @@
 
 notes
 
-- solid & astro - https://github.dev/Britnell/playalong
 - react & vite - https://github.dev/Britnell/playalong/tree/react
+  previously
+- [solid & astro](https://github.dev/Britnell/playalong)
+- react & vite
 
 # DOM
 
