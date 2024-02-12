@@ -1,10 +1,4 @@
-import {
-  expon,
-  linear,
-  notes,
-  type Segment,
-  type SongData,
-} from "src/lib/spotify";
+import { expon, notes, type Segment, type SongData } from "src/lib/spotify";
 
 export default function Audio({ data }: { data: SongData }) {
   return (
@@ -23,8 +17,9 @@ const Row = ({ data }: { data: Segment }) => {
   const height = data.duration * 100;
   const total = data.pitches.reduce((t, x) => t + x, 0);
 
+  const thinRow = height < 16;
   return (
-    <div class="row h-full" style={{ height: `${height}px` }}>
+    <div class={"row h-full "} style={{ height: `${height}px` }}>
       {data.pitches.map((pitch, p) => {
         const conf = (data.confidence * pitch) / total;
         const min = 0.08;
@@ -37,7 +32,7 @@ const Row = ({ data }: { data: Segment }) => {
                   "background-color": exphigh(conf, 0.5),
                 }}
               >
-                {notes[p]}
+                {!thinRow && notes[p]}
               </div>
             )}
           </div>
