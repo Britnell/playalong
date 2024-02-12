@@ -34,8 +34,18 @@ export const App = () => {
     const intvl = setInterval(() => {
       if (!token) return;
       getPlaybackStatus(token).then((st) => {
-        if (st.id === songid) return;
-        setSongid(st.id);
+        // update song if new
+        if (st.id !== songid) {
+          setSongid(st.id);
+          setState(st);
+          return;
+        }
+        if (!state.begin || !state.progress) return;
+        // update after seeking
+        const newadv = calcPlayback(st.begin, st.progress);
+        const prevadv = calcPlayback(state.begin, state.progress);
+        const timeDiff = Math.abs(newadv - prevadv);
+        if (timeDiff < 0.7) return;
         setState(st);
       });
     }, 3 * 1000);
@@ -46,7 +56,6 @@ export const App = () => {
     // get song data
     async function getSongData() {
       if (!songid || !token) return;
-      console.log(" > data");
       const data = await spotifyQuery(`/audio-analysis/${songid}`, token);
       if (data.error) {
         console.log(data.error);
@@ -61,7 +70,7 @@ export const App = () => {
     // scroll time sync
     const scrollUpdate = () => {
       if (!state.begin || !state.progress) return;
-      const playbacktime = (Date.now() - state.begin + state.progress) / 1000;
+      const playbacktime = calcPlayback(state.begin, state.progress);
       const scrollPos = playbacktime * 100 - window.innerHeight / 2;
       window.scrollTo({
         top: scrollPos,
@@ -103,23 +112,6 @@ export const App = () => {
   );
 };
 
-const getHashToken = () => {
-  let hash = window.location.hash;
-  if (!hash) return null;
-
-  const params = new URLSearchParams(hash.slice(1));
-  return params.get("access_token");
-};
-
-export type State = {
-  playing: boolean;
-  id?: string;
-  title?: string;
-  artist?: string;
-  progress?: number;
-  begin?: number;
-};
-
 const Head = ({ state }: { state: State }) => {
   return (
     <header class="fixed top-0  bg-black  z-10 py-2 px-4">
@@ -135,6 +127,25 @@ const Head = ({ state }: { state: State }) => {
     </header>
   );
 };
+
+export type State = {
+  playing: boolean;
+  id?: string;
+  title?: string;
+  artist?: string;
+  progress?: number;
+  begin?: number;
+};
+
+const getHashToken = () => {
+  let hash = window.location.hash;
+  if (!hash) return null;
+  const params = new URLSearchParams(hash.slice(1));
+  return params.get("access_token");
+};
+
+const calcPlayback = (begin: number, progress: number) =>
+  (Date.now() - begin + progress) / 1000;
 
 const getPlaybackStatus = async (token: string) => {
   const before = new Date().getTime();
