@@ -26,11 +26,7 @@ body {
 .key12 {
   background-color: white;
   color: black;
-  /* flex: 1; */
-
   position: relative;
-
-  /* padding: 8px; */
 }
 
 .key1,
@@ -40,20 +36,21 @@ body {
 .key10 {
   background-color: black;
   color: white;
-  /* flex: 0.7; */
 }
+:is(.key1, .key3, .key6, .key8, .key10) .note {
+  margin: 0 6px;
+}
+
+.note {
+  margin: 0 8px;
+  border-radius: 6px;
+  text-align: center;
+  height: 100%;
+}
+
 .key4 {
   border-right: 2px solid black;
 }
 .key5 {
   border-left: 2px solid black;
-}
-
-.note {
-  width: 60%;
-  max-width: 40px;
-  border-radius: 6px;
-  margin: 0 auto;
-  text-align: center;
-  height: 100%;
 }
