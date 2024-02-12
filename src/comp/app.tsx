@@ -98,8 +98,6 @@ export const App = () => {
     return () => window.removeEventListener("keypress", onkey);
   }, [autoscroll]);
 
-  // console.log(state, data);
-
   return (
     <div>
       <Head state={state} />
