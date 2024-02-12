@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { type SongData, spotifyQuery } from "src/lib/spotify";
 import Audio from "./audio";
 
+let lastSongId = "";
+
 export const App = () => {
   const [token] = useState(getHashToken);
   const [state, setState] = useState<State>({ playing: false });
@@ -16,46 +18,56 @@ export const App = () => {
     );
 
   useEffect(() => {
-    async function playbackSync() {
-      if (!token) return;
-
-      const before = new Date().getTime();
-      const status = await spotifyQuery("/me/player", token);
-      const after = new Date().getTime();
-      const time = (before + after) / 2;
-
-      const artist = status.item?.artists
-        .map((art: any) => art.name)
-        .join(", ");
-
-      setState({
-        id: status.item?.id,
-        playing: status.is_playing,
-        title: status.item?.name,
-        artist,
-        progress: status.progress_ms,
-        begin: time,
-      });
-    }
-
-    playbackSync();
+    // sync on load
+    if (!token) return;
+    getPlaybackStatus(token).then((st) => setState(st));
   }, []);
 
   useEffect(() => {
+    // sync interval
+    const intvl = setInterval(() => {
+      if (!token) return;
+      getPlaybackStatus(token).then((st) => setState(st));
+    }, 3 * 1000);
+    return () => clearInterval(intvl);
+  }, [state]);
+
+  useEffect(() => {
+    // get song data
     async function getSongData() {
       if (!state.id || !token) return;
+      if (state.id === lastSongId) return;
 
       const data = await spotifyQuery(`/audio-analysis/${state.id}`, token);
-      // console.log(state.id, data);
-
       if (data.error) {
         console.log(data.error);
         return;
       }
+      lastSongId = state.id;
       setData(data);
     }
     getSongData();
   }, [state]);
+
+  useEffect(() => {
+    // scroll time sync
+    const intvl = setInterval(() => {
+      if (!state.begin || !state.progress || !state.playing) return;
+
+      const playbacktime = (Date.now() - state.begin + state.progress) / 1000;
+      const scrollPos = playbacktime * 100 - window.innerHeight / 2;
+      const behavior =
+        Math.abs(window.scrollY - scrollPos) > 300 ? "auto" : "smooth";
+
+      window.scrollTo({
+        top: scrollPos,
+        left: 0,
+        behavior,
+      });
+    }, 80);
+    return () => clearInterval(intvl);
+  }, [state]);
+
   return (
     <div>
       <Head state={state} />
@@ -95,4 +107,22 @@ const Head = ({ state }: { state: State }) => {
       {!state.id && <h2>Play a song on spotify to get started</h2>}
     </header>
   );
+};
+
+const getPlaybackStatus = async (token: string) => {
+  const before = new Date().getTime();
+  const status = await spotifyQuery("/me/player", token);
+  const after = new Date().getTime();
+  const time = (before + after) / 2;
+
+  const artist = status.item?.artists.map((art: any) => art.name).join(", ");
+
+  return {
+    id: status.item?.id,
+    playing: status.is_playing,
+    title: status.item?.name,
+    artist,
+    progress: status.progress_ms,
+    begin: time,
+  };
 };
