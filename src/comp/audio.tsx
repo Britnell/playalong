@@ -48,11 +48,3 @@ const exphigh = (perc: number, max: number) => {
   else val = expon(perc, 0, max, 0, 1);
   return `hsl(120deg 100% 50% / ${val})`;
 };
-
-// const highlight = (perc: number, min: number, max: number) => {
-//   let val = 0;
-//   if (perc < min) val = 0;
-//   else if (perc > max) val = 1;
-//   else val = expon(perc, 0, max, 0, 1);
-//   return `hsl(120deg 100% 50% / ${val})`;
-// };
