@@ -112,3 +112,17 @@ export const linear = (
   ymin: number,
   ymax: number
 ) => ymin + ((x - min) / (max - min)) * (ymax - ymin);
+
+export const expon = (
+  x: number,
+  min: number,
+  max: number,
+  ymin: number,
+  ymax: number
+) => {
+  const prop = (x - min) / (max - min);
+  return ymin + prop * prop * (ymax - ymin);
+};
+
+export const round = (x: number, digits: number = 10) =>
+  Math.floor(x * digits) / digits;

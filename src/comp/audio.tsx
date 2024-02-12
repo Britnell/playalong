@@ -1,4 +1,10 @@
-import { linear, notes, type Segment, type SongData } from "src/lib/spotify";
+import {
+  expon,
+  linear,
+  notes,
+  type Segment,
+  type SongData,
+} from "src/lib/spotify";
 
 export default function Audio({ data }: { data: SongData }) {
   return (
@@ -15,28 +21,25 @@ export default function Audio({ data }: { data: SongData }) {
 
 const Row = ({ data }: { data: Segment }) => {
   const height = data.duration * 100;
-  // const one = data.pitches.findIndex((p) => p === 1);
   const total = data.pitches.reduce((t, x) => t + x, 0);
 
   return (
     <div class="row h-full" style={{ height: `${height}px` }}>
       {data.pitches.map((pitch, p) => {
-        // const conf = pitch > 0.4 ? data.confidence * pitch : 0;
         const conf = (data.confidence * pitch) / total;
         const min = 0.08;
         return (
           <div class={` key${p} `}>
-            <div
-              class=" note "
-              style={{ "background-color": highlight(conf, min) }}
-            >
-              {/* <span class=" text-[0.8em]">
-                  {dec(conf)}
-                  {dec(pitch)}
-                </span> */}
-              {conf > min ? notes[p] : " "}
-              {/* {show ? notes[p] : " "} */}
-            </div>
+            {conf > min && (
+              <div
+                class=" note "
+                style={{
+                  "background-color": exphigh(conf, 0.5),
+                }}
+              >
+                {notes[p]}
+              </div>
+            )}
           </div>
         );
       })}
@@ -44,12 +47,17 @@ const Row = ({ data }: { data: Segment }) => {
   );
 };
 
-const highlight = (perc: number, min: number = 0.1, max: number = 0.6) => {
+const exphigh = (perc: number, max: number) => {
   let val = 0;
-  if (perc < min) val = 0;
-  else if (perc > max) val = 1;
-  else val = linear(perc, min, max, 0.2, 1);
+  if (perc >= max) val = 1;
+  else val = expon(perc, 0, max, 0, 1);
   return `hsl(120deg 100% 50% / ${val})`;
 };
 
-// const dec = (x: number, digits: number = 10) => Math.floor(x * digits) / digits;
+// const highlight = (perc: number, min: number, max: number) => {
+//   let val = 0;
+//   if (perc < min) val = 0;
+//   else if (perc > max) val = 1;
+//   else val = expon(perc, 0, max, 0, 1);
+//   return `hsl(120deg 100% 50% / ${val})`;
+// };
