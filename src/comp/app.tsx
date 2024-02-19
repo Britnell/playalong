@@ -42,11 +42,13 @@ export const App = () => {
         }
         if (!state.begin || !state.progress) return;
         // update after seeking
+        console.log(state, st);
+
         const newadv = calcPlayback(st.begin, st.progress);
         const prevadv = calcPlayback(state.begin, state.progress);
         const timeDiff = Math.abs(newadv - prevadv);
-        if (timeDiff < 0.7) return;
-        setState(st);
+        if (timeDiff > 0.7) setState(st);
+        if (st.playing !== state.playing) setState(st);
       });
     }, 3 * 1000);
     return () => clearInterval(intvl);
