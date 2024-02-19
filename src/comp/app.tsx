@@ -41,9 +41,7 @@ export const App = () => {
           return;
         }
         if (!state.begin || !state.progress) return;
-        // update after seeking
-        console.log(state, st);
-
+        // update after seeking / pause
         const newadv = calcPlayback(st.begin, st.progress);
         const prevadv = calcPlayback(state.begin, state.progress);
         const timeDiff = Math.abs(newadv - prevadv);
