@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { type SongData, spotifyQuery } from "src/lib/spotify";
+import { type SongData, spotifyQuery, tokenInit } from "src/lib/spotify";
 import Audio from "./audio";
 
 export const App = () => {
-  const [token] = useState(getHashToken);
+  // if no token, redirect to login
+  const [token] = useState(() => tokenInit());
   const [songid, setSongid] = useState("");
   const [autoscroll, setAutoscroll] = useState(true);
   const [state, setState] = useState<State>({
@@ -11,13 +12,12 @@ export const App = () => {
   });
   const [data, setData] = useState<SongData | null>(null);
 
-  if (!token)
-    return (
-      <div>
-        <h2>No token ... </h2>
-        <a href="/">Please log in first</a>
-      </div>
-    );
+  useEffect(() => {
+    // if no token redirect
+    if (!token) {
+      window.location.href = "/playalong";
+    }
+  }, []);
 
   useEffect(() => {
     // sync on load
@@ -31,23 +31,22 @@ export const App = () => {
 
   useEffect(() => {
     // sync interval
-    const intvl = setInterval(() => {
+    const intvl = setInterval(async () => {
       if (!token) return;
-      getPlaybackStatus(token).then((st) => {
-        // update song if new
-        if (st.id !== songid) {
-          setSongid(st.id);
-          setState(st);
-          return;
-        }
-        if (!state.begin || !state.progress) return;
-        // update after seeking / pause
-        const newadv = calcPlayback(st.begin, st.progress);
-        const prevadv = calcPlayback(state.begin, state.progress);
-        const timeDiff = Math.abs(newadv - prevadv);
-        if (timeDiff > 0.7) setState(st);
-        if (st.playing !== state.playing) setState(st);
-      });
+      const st = await getPlaybackStatus(token);
+      // update song if new
+      if (st.id !== songid) {
+        setSongid(st.id);
+        setState(st);
+        return;
+      }
+      if (!state.begin || !state.progress) return;
+      // update after seeking / pause
+      const newadv = calcPlayback(st.begin, st.progress);
+      const prevadv = calcPlayback(state.begin, state.progress);
+      const timeDiff = Math.abs(newadv - prevadv);
+      if (timeDiff > 0.7) setState(st);
+      if (st.playing !== state.playing) setState(st);
     }, 3 * 1000);
     return () => clearInterval(intvl);
   }, [state]);
@@ -58,7 +57,6 @@ export const App = () => {
       if (!songid || !token) return;
       const data = await spotifyQuery(`/audio-analysis/${songid}`, token);
       if (data.error) {
-        console.log(data.error);
         return;
       }
       setData(data);
@@ -90,13 +88,20 @@ export const App = () => {
     const onkey = (ev: KeyboardEvent) => {
       if (ev.code === "Space") {
         ev.preventDefault();
-        console.log("SPACE");
         setAutoscroll((sc) => !sc);
       }
     };
     window.addEventListener("keypress", onkey);
     return () => window.removeEventListener("keypress", onkey);
   }, [autoscroll]);
+
+  if (!token)
+    return (
+      <div>
+        <h2>No token ... </h2>
+        <a href="/">Please log in first</a>
+      </div>
+    );
 
   return (
     <div>
@@ -106,8 +111,8 @@ export const App = () => {
           <Audio data={data} />
           {autoscroll && (
             <>
-              <div class=" w-full fixed top-0 bottom-[calc(50vh+200px)] bg-slate-700  bg-opacity-20 z-50"></div>
-              <div class=" w-full fixed bottom-0 top-[calc(50vh+200px)] bg-slate-700  bg-opacity-20 z-50"></div>
+              <div class=" w-full fixed top-0 bottom-[calc(50vh+200px)] bg-slate-700  bg-opacity-20 z-20"></div>
+              <div class=" w-full fixed bottom-0 top-[calc(50vh+200px)] bg-slate-700  bg-opacity-20 z-20"></div>
             </>
           )}
         </>
@@ -120,13 +125,18 @@ export const App = () => {
 
 const Head = ({ state }: { state: State }) => {
   return (
-    <header class="fixed top-0  bg-black  z-10 py-2 px-4">
+    <header class="fixed top-0  bg-black z-50 py-2 px-4">
       {state.id && (
         <>
           <p>
             {state.title} - {state.artist}{" "}
           </p>
-          <p>{state.playing ? " " : "paused"}</p>
+          <p>
+            <a href="/app" class="underline">
+              back
+            </a>
+            <span>{state.playing ? " " : "paused"}</span>
+          </p>
         </>
       )}
       {!state.id && <h2>Play a song on spotify to get started</h2>}
@@ -143,12 +153,7 @@ export type State = {
   begin?: number;
 };
 
-const getHashToken = () => {
-  let hash = window.location.hash;
-  if (!hash) return null;
-  const params = new URLSearchParams(hash.slice(1));
-  return params.get("access_token");
-};
+// check for token, store in local storage
 
 const calcPlayback = (begin: number, progress: number) =>
   (Date.now() - begin + progress) / 1000;

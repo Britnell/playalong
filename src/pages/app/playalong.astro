@@ -1,0 +1,8 @@
+---
+import Page from "../../comp/Page.astro";
+import { App as AppComp } from "../../comp/playalong";
+---
+
+<Page>
+  <AppComp client:only="react" />
+</Page>

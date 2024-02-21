@@ -1,4 +1,5 @@
 ---
+import { spotifyLoginURL } from "../lib/spotify";
 import "../comp/styles.css";
 ---
 
@@ -21,38 +22,20 @@ import "../comp/styles.css";
   <body class="">
     <header class="pt-3 pb-2">
       <div class="max-w-[600px] px-4 mx-auto text-black font-bold text-2xl">
-        Spotify Integrations
+        Spotify Playalong
       </div>
     </header>
     <main class="max-w-[600px] px-8 mx-auto pt-16">
       <h1 class="text-3xl">
-        I like building stuff with spotify api - I'm a web developer & love
-        listening to music
+        Get live musical anotation to the music you're listening to on spotify
       </h1>
-
-      <a href="/playalong" class="">
-        <div class="mt-16 border border-gray-400 rounded-2xl p-4 text-md">
-          <h2>Spotify playalong</h2>
-          <p>Musical annotation live of spotify you are listening to</p>
-          <p
-            class="inline-block px-6 pt-2 pb-1 rounded-full font-bold bg-green-500 text-black"
-          >
-            more
-          </p>
-        </div>
-      </a>
-
-      <a href="/albums" class="">
-        <div class="mt-16 border border-gray-400 rounded-2xl p-4 text-md">
-          <h2>Albums</h2>
-          <p>lorem ipsum</p>
-          <p
-            class="inline-block px-6 pt-2 pb-1 rounded-full font-bold bg-green-500 text-black"
-          >
-            more
-          </p>
-        </div>
-      </a>
+      <div class="mt-16">
+        <a
+          href={spotifyLoginURL("playalong")}
+          class="inline-block px-6 pt-3 pb-2 rounded-full text-xl font-bold bg-green-500 text-black"
+          >Connect to my spotify</a
+        >
+      </div>
     </main>
     <footer
       class="text-lg px-8 text-center fixed bottom-0 w-full text-balance pb-4"

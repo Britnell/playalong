@@ -40,27 +40,38 @@ const scopes = [
   "user-read-playback-state",
   "user-modify-playback-state",
   "user-read-currently-playing",
+  "user-top-read",
+  "user-library-read",
 ];
 
-export const spotifyLoginURL =
+export const spotifyLoginURL = (path: string) =>
   "https://accounts.spotify.com/authorize" +
   `?client_id=${client_id}` +
   "&response_type=token" +
-  `&redirect_uri=${encodeURIComponent(`${redirect_uri}/app`)}` +
+  `&redirect_uri=${encodeURIComponent(`${redirect_uri}/app/${path}`)}` +
   `&scope=${scopes.join("%20")}` +
   "&state=listening-101";
 
-export function loadHashToken() {
-  let hash = window.location.hash,
-    i;
-  if (!hash) return "";
-  i = hash.indexOf("access_token");
-  if (i === -1) return "";
-  let beg = hash.indexOf("=", i) + 1;
-  let end = hash.indexOf("&", beg);
-  if (beg === -1 || end === -1) return "";
-  return hash.slice(beg, end);
-}
+export const getHashToken = () => {
+  let hash = window.location.hash;
+  if (!hash) return null;
+  const params = new URLSearchParams(hash.slice(1));
+  return params.get("access_token");
+};
+
+export const tokenInit = () => {
+  const hash = getHashToken();
+  const local = getLocalToken();
+  if (!hash) return local;
+
+  setLocalToken(hash);
+  return hash;
+};
+
+const localkey = "spotifytoken";
+export const getLocalToken = () => window.localStorage.getItem(localkey);
+export const setLocalToken = (value: string) =>
+  window.localStorage.setItem(localkey, value);
 
 export function spotifyQuery(url: string, token: string) {
   return fetch("https://api.spotify.com/v1" + url, {
@@ -73,7 +84,7 @@ export function spotifyQuery(url: string, token: string) {
 
     if (resp.status === 204) return { error: "silence" };
 
-    console.log(" err ", resp.status);
+    console.error(" err ", resp.status);
     if (resp.status === 401) {
       window.location.href = "/";
       return { error: "expired" };
