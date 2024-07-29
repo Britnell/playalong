@@ -168,11 +168,11 @@ const ErrorComp = () => {
   useEffect(() => {
     // Error occured, probably from rendering local storage, lets clear it
     window.localStorage.clear();
-    window.location.reload();
   }, []);
   return (
     <div>
       <p>Woops - something went wrong</p>
+      <button onClick={() => window.location.reload()}>restart</button>
     </div>
   );
 };
@@ -200,6 +200,7 @@ function Artists({
         return;
       }
       const { items } = await getTopArtists(token, time_range);
+      if (!items) return;
       setLocal(key, items, cacheAge);
       setData(items);
     }
@@ -212,7 +213,7 @@ function Artists({
       <div class=" grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3">
         {data.map((artist, i) => (
           <div class=" p-3" key={i}>
-            <img src={artist.images[0].url} alt="album cover" />
+            <img src={artist.images[0]?.url} alt="album cover" />
             <h3>
               #{i + 1} - {artist.name}
             </h3>
@@ -253,6 +254,7 @@ function Tracks({ token, time_range }: { token: string; time_range: string }) {
         return;
       }
       const { items } = await getTopTracks(token, time_range);
+      if (!items) return;
       setLocal(key, items, cacheAge);
       setData(items);
     }
@@ -312,6 +314,8 @@ function Albums({ token }: { token: string }) {
       }
 
       const { items } = await getAlbums(token);
+      if (!items) return;
+
       setLocal(key, items, cacheAge);
       setData(items);
     }

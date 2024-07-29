@@ -84,7 +84,6 @@ export function spotifyQuery(url: string, token: string) {
 
     if (resp.status === 204) return { error: "silence" };
 
-    console.error(" err ", resp.status);
     if (resp.status === 401) {
       window.location.href = "/";
       return { error: "expired" };
