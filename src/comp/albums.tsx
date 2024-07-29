@@ -213,7 +213,13 @@ function Artists({
       <div class=" grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3">
         {data.map((artist, i) => (
           <div class=" p-3" key={i}>
-            <img src={artist.images[0]?.url} alt="album cover" />
+            <div class=" aspect-square relative">
+              <img
+                src={artist.images[0]?.url}
+                alt="album cover"
+                class=" w-full h-full object-cover object-center"
+              />
+            </div>
             <h3>
               #{i + 1} - {artist.name}
             </h3>
