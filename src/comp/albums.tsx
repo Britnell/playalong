@@ -200,7 +200,7 @@ function Artists({
     const max = calc[calc.length - 1];
 
     setStats({
-      avrg,
+      avrg: Math.floor(avrg),
       min,
       max,
     });
@@ -233,16 +233,16 @@ function Artists({
       <div className="grid md:grid-cols-2">
         <h2 class=" text-2xl ">Your Top Artists</h2>
         {stats && (
-          <div class=" mono">
-            <h3>Your Stats</h3>
+          <div class=" mono text-sm">
+            <h3 class=" text-base font-bold">Your Stats</h3>
             <p>
               Most popular artist : {stats.max.name} - {stats.max.popularity}%
             </p>
             <p>
               Most unknown artist : {stats.min.name} - {stats.min.popularity}%
             </p>
-            <p>Average popularity : {Math.floor(stats.avrg)}%</p>
-            <p>Hipster index : {Math.floor(100 - stats.avrg)}%</p>
+            <p>Average popularity : {stats.avrg}%</p>
+            <p>Hipster index : {100 - stats.avrg}%</p>
           </div>
         )}
       </div>
