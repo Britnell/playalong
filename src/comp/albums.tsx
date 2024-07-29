@@ -285,47 +285,79 @@ function Tracks({ token, time_range }: { token: string; time_range: string }) {
   return (
     <section>
       <h2>Your Top Tracks</h2>
-      <div class=" grid md:grid-cols-[repeat(auto-fill,minmax(min(100%,380px),1fr))] gap-4 justify-center  ">
+      <div class=" grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-6  ">
         {tracks.map((track, i) => (
-          <div
-            class=" group relative [clip-path:inset(0px_0px_0px_0px_round_0px)] hover:[clip-path:inset(6px_6px_6px_6px_round_20px)] transition-all "
-            key={i}
-          >
+          <div key={i}>
             <img
               src={track.album.images[0].url}
               alt="album cover"
               loading="lazy"
             />
-            <div className=" opacity-0 group-hover:opacity-100 transition-opacity dur duration-[.4s] absolute inset-0 bg-gray-900 bg-opacity-70 p-6 py-8  flex flex-col text-lg">
-              <h3 class=" text-2xl ">
-                #{i + 1} - {track.name}
-              </h3>
-              <p class=" text-xl">
-                By {track.artists.map((a) => a.name).join(", ")}
-              </p>
-              <p class=" my-12 ">Popularity {track.popularity}</p>
-              <p class=" flex flex-wrap gap-2 text-sm">
-                <a
-                  href={track.external_urls.spotify}
-                  class=" rounded-lg px-2 py-1   text-black font-bold bg-green-700"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  open on spotify
-                </a>
-                <a
-                  href={`https://bandcamp.com/search?item_type=b&item_type=a&q=${encodeURIComponent(
-                    [track.album.name, track.artists[0]?.name].join(" ")
-                  )}`}
-                  class=" rounded-lg px-2 py-1  text-black font-bold bg-[#42a0bd] "
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  bandcamp
-                </a>
-              </p>
-            </div>
+            <h3>
+              #{i + 1} - {track.name}
+            </h3>
+            <p>By {track.artists.map((a) => a.name).join(", ")}</p>
+            <p>Popularity {track.popularity}</p>
+            <p class=" flex flex-wrap gap-2 text-sm">
+              <a
+                href={track.external_urls.spotify}
+                class=" rounded-lg px-2 py-1   text-black font-bold bg-green-700"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                open on spotify
+              </a>
+              <a
+                href={`https://bandcamp.com/search?item_type=b&item_type=a&q=${encodeURIComponent(
+                  [track.album.name, track.artists[0]?.name].join(" ")
+                )}`}
+                class=" rounded-lg px-2 py-1  text-black font-bold bg-[#42a0bd] "
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                bandcamp
+              </a>
+            </p>
           </div>
+          // <div
+          //   class=" group relative [clip-path:inset(0px_0px_0px_0px_round_0px)] hover:[clip-path:inset(6px_6px_6px_6px_round_20px)] transition-all "
+          //   key={i}
+          // >
+          //   <img
+          //     src={track.album.images[0].url}
+          //     alt="album cover"
+          //     loading="lazy"
+          //   />
+          //   <div className=" opacity-0 group-hover:opacity-100 transition-opacity dur duration-[.4s] absolute inset-0 bg-gray-900 bg-opacity-70 p-6 py-8  flex flex-col text-lg">
+          //     <h3 class=" text-2xl ">
+          //       #{i + 1} - {track.name}
+          //     </h3>
+          //     <p class=" text-xl">
+          //       By {track.artists.map((a) => a.name).join(", ")}
+          //     </p>
+          //     <p class=" my-12 ">Popularity {track.popularity}</p>
+          //     <p class=" flex flex-wrap gap-2 text-sm">
+          //       <a
+          //         href={track.external_urls.spotify}
+          //         class=" rounded-lg px-2 py-1   text-black font-bold bg-green-700"
+          //         target="_blank"
+          //         rel="noreferrer noopener"
+          //       >
+          //         open on spotify
+          //       </a>
+          //       <a
+          //         href={`https://bandcamp.com/search?item_type=b&item_type=a&q=${encodeURIComponent(
+          //           [track.album.name, track.artists[0]?.name].join(" ")
+          //         )}`}
+          //         class=" rounded-lg px-2 py-1  text-black font-bold bg-[#42a0bd] "
+          //         target="_blank"
+          //         rel="noreferrer noopener"
+          //       >
+          //         bandcamp
+          //       </a>
+          //     </p>
+          //   </div>
+          // </div>
         ))}
       </div>
     </section>
@@ -334,8 +366,8 @@ function Tracks({ token, time_range }: { token: string; time_range: string }) {
 
 function Albums({ token }: { token: string }) {
   const [data, setData] = useState([]);
-
   const key = "saved-albums";
+
   useEffect(() => {
     async function load() {
       if (!token) {
@@ -359,34 +391,69 @@ function Albums({ token }: { token: string }) {
 
   return (
     <section>
-      <div class=" grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-3">
+      <div class=" grid md:grid-cols-[repeat(auto-fill,minmax(min(100%,400px),1fr))] gap-4 justify-center">
         {data.map(({ album }: { album: Album }, i) => (
-          <div key={i}>
+          <div
+            class=" group relative [clip-path:inset(0px_0px_0px_0px_round_0px)] hover:[clip-path:inset(6px_6px_6px_6px_round_20px)] transition-all "
+            key={i}
+          >
             <img src={album.images[0].url} alt="album cover" loading="lazy" />
-            <h3>
-              #{i + 1} - {album.name}
-            </h3>
-            <p>By {album.artists.map((a) => a.name).join(", ")}</p>
-            <p>Popularity {album.popularity}</p>
-            <p class=" flex flex-wrap gap-2 text-sm">
-              <a
-                href={album.external_urls.spotify}
-                class=" rounded-lg px-2 py-1   text-black font-bold bg-green-700"
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                open on spotify
-              </a>
-              <a
-                href={`https://bandcamp.com/search?item_type=b&item_type=a&q=${album.name}`}
-                class=" rounded-lg px-2 py-1  text-black font-bold bg-[#42a0bd] "
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                bandcamp
-              </a>
-            </p>
+            <div className=" opacity-0 group-hover:opacity-100 transition-opacity dur duration-[.4s] absolute inset-0 bg-gray-900 bg-opacity-70 p-6 py-8  flex flex-col text-lg">
+              <h3 class=" text-2xl ">
+                #{i + 1} - {album.name}
+              </h3>
+              <p class=" text-xl">
+                By {album.artists.map((a) => a.name).join(", ")}
+              </p>
+              <p class=" my-8 ">Popularity {album.popularity}</p>
+              <p class=" flex flex-wrap gap-2 text-sm">
+                <a
+                  href={album.external_urls.spotify}
+                  class=" rounded-lg px-2 py-1   text-black font-bold bg-green-500"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  open on spotify
+                </a>
+                <a
+                  href={`https://bandcamp.com/search?item_type=b&item_type=a&q=${encodeURIComponent(
+                    [album.name, album.artists[0]?.name].join(" ")
+                  )}`}
+                  class=" rounded-lg px-2 py-1  text-black font-bold bg-[#42a0bd] "
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  bandcamp
+                </a>
+              </p>
+            </div>
           </div>
+          // <div key={i}>
+          //   <img src={album.images[0].url} alt="album cover" loading="lazy" />
+          //   <h3>
+          //     #{i + 1} - {album.name}
+          //   </h3>
+          //   <p>By {album.artists.map((a) => a.name).join(", ")}</p>
+          //   <p>Popularity {album.popularity}</p>
+          //   <p class=" flex flex-wrap gap-2 text-sm">
+          //     <a
+          //       href={album.external_urls.spotify}
+          //       class=" rounded-lg px-2 py-1   text-black font-bold bg-green-700"
+          //       target="_blank"
+          //       rel="noreferrer noopener"
+          //     >
+          //       open on spotify
+          //     </a>
+          //     <a
+          //       href={`https://bandcamp.com/search?item_type=b&item_type=a&q=${album.name}`}
+          //       class=" rounded-lg px-2 py-1  text-black font-bold bg-[#42a0bd] "
+          //       target="_blank"
+          //       rel="noreferrer noopener"
+          //     >
+          //       bandcamp
+          //     </a>
+          //   </p>
+          // </div>
         ))}
       </div>
     </section>
